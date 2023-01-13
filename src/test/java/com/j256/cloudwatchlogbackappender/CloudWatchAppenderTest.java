@@ -7,20 +7,16 @@ import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.easymock.IAnswer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.logs.AWSLogs;
@@ -55,13 +51,14 @@ public class CloudWatchAppenderTest {
 
 	private final LoggerContext LOGGER_CONTEXT = new LoggerContext();
 
-	@Before
+	@BeforeEach
 	public void before() {
 		Ec2InstanceNameConverter.setInstanceName("localhost");
 	}
 
-	@Test(timeout = 10000)
-	public void testBasic() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testBasic() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs awsLogClient = createMock(AWSLogs.class);
 		appender.setAwsLogsClient(awsLogClient);
@@ -120,8 +117,9 @@ public class CloudWatchAppenderTest {
 		verify(awsLogClient);
 	}
 
-	@Test(timeout = 10000)
-	public void testBatchTimeout() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testBatchTimeout() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs awsLogClient = createMock(AWSLogs.class);
 		appender.setAwsLogsClient(awsLogClient);
@@ -174,8 +172,9 @@ public class CloudWatchAppenderTest {
 		verify(awsLogClient);
 	}
 
-	@Test(timeout = 10000)
-	public void testEmergencyAppender() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testEmergencyAppender() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		appender.setInitialWaitTimeMillis(0);
 		AWSLogs awsLogClient = createMock(AWSLogs.class);
@@ -249,8 +248,9 @@ public class CloudWatchAppenderTest {
 		verify(awsLogClient, emergencyAppender);
 	}
 
-	@Test(timeout = 10000)
-	public void testLogClientFailed() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testLogClientFailed() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		appender.setInitialWaitTimeMillis(0);
 
@@ -289,8 +289,9 @@ public class CloudWatchAppenderTest {
 		appender.stop();
 	}
 
-	@Test(timeout = 10000)
-	public void testBigMessageTruncate() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testBigMessageTruncate() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs awsLogClient = createMock(AWSLogs.class);
 		appender.setAwsLogsClient(awsLogClient);
@@ -354,8 +355,9 @@ public class CloudWatchAppenderTest {
 		assertNull(emergency.event);
 	}
 
-	@Test(timeout = 10000)
-	public void testBigMessageDrop() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testBigMessageDrop() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs awsLogClient = createMock(AWSLogsClient.class);
 		appender.setAwsLogsClient(awsLogClient);
@@ -406,8 +408,9 @@ public class CloudWatchAppenderTest {
 		assertEquals(0, appender.getEventsWrittenCount());
 	}
 
-	@Test(timeout = 10000)
-	public void testMoreAwsCalls() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testMoreAwsCalls() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs logsClient = createMock(AWSLogs.class);
 		AmazonEC2 ec2Client = createMock(AmazonEC2.class);
@@ -476,8 +479,9 @@ public class CloudWatchAppenderTest {
 		verify(logsClient, ec2Client);
 	}
 
-	@Test(timeout = 10000)
-	public void testMoreAwsCallsMissingGroupAndStream() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testMoreAwsCallsMissingGroupAndStream() throws InterruptedException {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		AWSLogs logsClient = createMock(AWSLogs.class);
 		AmazonEC2 ec2Client = createMock(AmazonEC2.class);
@@ -506,14 +510,14 @@ public class CloudWatchAppenderTest {
 		final String fullMessage = "[" + threadName + "] " + level + " " + loggerName + " - " + message + "\n";
 
 		DescribeLogGroupsResult logGroupsResult =
-				new DescribeLogGroupsResult().withLogGroups(Collections.<LogGroup> emptyList());
+				new DescribeLogGroupsResult().withLogGroups(Collections.<LogGroup>emptyList());
 		expect(logsClient.describeLogGroups(isA(DescribeLogGroupsRequest.class))).andReturn(logGroupsResult);
 
 		CreateLogGroupResult createLogGroupResult = new CreateLogGroupResult();
 		expect(logsClient.createLogGroup(isA(CreateLogGroupRequest.class))).andReturn(createLogGroupResult);
 
 		DescribeLogStreamsResult logStreamsResult =
-				new DescribeLogStreamsResult().withLogStreams(Collections.<LogStream> emptyList());
+				new DescribeLogStreamsResult().withLogStreams(Collections.<LogStream>emptyList());
 		expect(logsClient.describeLogStreams(isA(DescribeLogStreamsRequest.class))).andReturn(logStreamsResult);
 
 		CreateLogStreamResult createLogStreamResult = new CreateLogStreamResult();
@@ -552,8 +556,9 @@ public class CloudWatchAppenderTest {
 		verify(logsClient, ec2Client);
 	}
 
-	@Test(timeout = 10000)
-	public void testCoverage() {
+	@Test
+	@Timeout(10000)
+	void testCoverage() {
 		CloudWatchAppender appender = new CloudWatchAppender();
 		appender.setInitialWaitTimeMillis(0);
 		appender.detachAndStopAllAppenders();

@@ -6,11 +6,12 @@ import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.easymock.IAnswer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import com.amazonaws.services.logs.AWSLogsClient;
 import com.amazonaws.services.logs.model.PutLogEventsRequest;
@@ -22,8 +23,9 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class SystemPropertyConverterTest extends BaseConverterTest {
 
-	@Test(timeout = 5000)
-	public void testStuff() throws InterruptedException {
+	@Test
+	@Timeout(5000)
+	void testStuff() throws InterruptedException {
 
 		String propName = "os.version";
 		String propValue = System.getProperty(propName);
@@ -72,8 +74,9 @@ public class SystemPropertyConverterTest extends BaseConverterTest {
 		verify(awsLogClient);
 	}
 
-	@Test(timeout = 5000)
-	public void testNoEnvNameSpecified() throws InterruptedException {
+	@Test
+	@Timeout(5000)
+	void testNoEnvNameSpecified() throws InterruptedException {
 
 		AWSLogsClient awsLogClient = createMock(AWSLogsClient.class);
 		appender.setAwsLogsClient(awsLogClient);
@@ -118,8 +121,9 @@ public class SystemPropertyConverterTest extends BaseConverterTest {
 		verify(awsLogClient);
 	}
 
-	@Test(timeout = 5000)
-	public void testUnknownEnvNameSpecified() throws InterruptedException {
+	@Test
+	@Timeout(5000)
+	void testUnknownEnvNameSpecified() throws InterruptedException {
 
 		AWSLogsClient awsLogClient = createMock(AWSLogsClient.class);
 		appender.setAwsLogsClient(awsLogClient);

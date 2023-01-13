@@ -1,13 +1,13 @@
 package com.j256.cloudwatchlogbackappender;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MiscUtilsTest {
 
 	@Test
-	public void testIsBlank() {
+	void testIsBlank() {
 		assertTrue(MiscUtils.isBlank(null));
 		assertTrue(MiscUtils.isBlank(""));
 		assertTrue(MiscUtils.isBlank(" "));

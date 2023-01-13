@@ -6,10 +6,11 @@ import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.easymock.IAnswer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import com.amazonaws.services.logs.AWSLogsClient;
 import com.amazonaws.services.logs.model.PutLogEventsRequest;
@@ -21,8 +22,9 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class Ec2InstanceIdConverterTest extends BaseConverterTest {
 
-	@Test(timeout = 10000)
-	public void testInstanceId() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testInstanceId() throws InterruptedException {
 
 		String instanceId = "fewhwehpewpf";
 		Ec2InstanceIdConverter.setInstanceId(instanceId);
@@ -70,8 +72,9 @@ public class Ec2InstanceIdConverterTest extends BaseConverterTest {
 		verify(awsLogClient);
 	}
 
-	@Test(timeout = 10000)
-	public void testInstanceNameUnknown() throws InterruptedException {
+	@Test
+	@Timeout(10000)
+	void testInstanceNameUnknown() throws InterruptedException {
 
 		Ec2InstanceIdConverter.setInstanceId(null);
 
